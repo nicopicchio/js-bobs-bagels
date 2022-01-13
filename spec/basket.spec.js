@@ -7,18 +7,18 @@ describe("Basket", () => {
     basket = new Basket();
   });
 
-  it("create and add a bagel to the basket", () => {
+  it("create and add a item to the basket", () => {
     const expected = [{
         id: 1,
-
         type: 'salmon and avocado',
         price: 3.99
       }]
-    const result = basket.addItemToBasket(1, 'salmon and avocado', 3.99)
+    basket.addItemToBasket('salmon and avocado', 3.99)  
+    const result = basket.showBasket()
     expect(result).toEqual(expected);
   });
 
-  it("a user can add more than one bagel to the basket", () => {
+  it("a user can add more than one item to the basket", () => {
     const expected = [
       {
         id: 1,
@@ -31,8 +31,9 @@ describe("Basket", () => {
         price: 2.99,
       }
     ]
-    basket.addItemToBasket(1, 'salmon and avocado', 3.99)
-    const result = basket.addItemToBasket(1, 'chicken mayo',  2.99)
+    basket.addItemToBasket('salmon and avocado', 3.99)
+    basket.addItemToBasket('chicken mayo',  2.99)
+    const result = basket.showBasket()
     expect(result).toEqual(expected);
   });
 
@@ -44,9 +45,10 @@ describe("Basket", () => {
         price: 3.99,
       }
     ]
-    basket.addItemToBasket(1, 'salmon and avocado', 3.99)
-    basket.addItemToBasket(1, 'chicken mayo', 2.99)
-    const result = basket.removeItemFromBasket(2)
+    basket.addItemToBasket('salmon and avocado', 3.99)
+    basket.addItemToBasket('chicken mayo', 2.99)
+    basket.removeItemFromBasket(2)
+    const result = basket.showBasket()
     expect(result).toEqual(expected);
   });
 
@@ -73,60 +75,144 @@ describe("Basket", () => {
         price: 3.99,
       }
     ]
-    basket.addItemToBasket(1, 'salmon and avocado', 3.99)
-    basket.addItemToBasket(1, 'chicken mayo', 2.99)
-    basket.addItemToBasket(1, 'nutella and sesame seeds', 3.99)
-    basket.addItemToBasket(1, 'ham and cheese', 2.99)
-    basket.addItemToBasket(1, 'chorizo and soft cheese', 3.99)
-    basket.addItemToBasket(1, 'halloumi, chickpeas and lettuce', 4.99)
+    basket.addItemToBasket('salmon and avocado', 3.99)
+    basket.addItemToBasket('chicken mayo', 2.99)
+    basket.addItemToBasket('nutella and sesame seeds', 3.99)
+    basket.addItemToBasket('ham and cheese', 2.99)
+    basket.addItemToBasket('chorizo and soft cheese', 3.99)
+    basket.addItemToBasket('halloumi, hummous and lettuce', 4.99)
     basket.removeItemFromBasket(4)
-    const result = basket.removeItemFromBasket(6)
+    basket.removeItemFromBasket(6)
+    const result = basket.showBasket()
     expect(result).toEqual(expected);
   });
 
-  // it("a user cannot add more than 10 items to their basket", () => {
-  //   const expected = [
-  //     {
-  //       id: 1,
-  //       type: 'salmon and avocado',
-  //       price: 3.99,
-  //     }
-  //   ]
-  //   const result = basket.addItemToBasket(11, 'salmon and avocado', 3.99)
-  //   expect(result).toEqual(expected);
-  // });
-  // basket.addItemToBasket(1, 'chicken mayo', 2.99)
-  // basket.addItemToBasket(1, 'nutella and sesame seeds', 3.99)
-  // basket.addItemToBasket(1, 'ham and cheese', 2.99)
-  // basket.addItemToBasket(1, 'chorizo and soft cheese', 3.99)
-  // basket.addItemToBasket(1, 'halloumi, chickpeas and lettuce', 4.99)
+  it("a user cannot add more than 5 items to their basket", () => {
+    const expected = 'You cannot add more than 5 items to your basket!'
+    basket.addItemToBasket('chicken mayo', 2.99)
+    basket.addItemToBasket('nutella and sesame seeds', 3.99)
+    basket.addItemToBasket('ham and cheese', 2.99)
+    basket.addItemToBasket('chorizo and soft cheese', 3.99)
+    basket.addItemToBasket('halloumi, hummous and lettuce', 4.99)
+    const result = basket.addItemToBasket('salmon and avocado', 3.99)
+    expect(result).toEqual(expected);
+  });
+
+  it("if the user tries to add more than 5 items, the basket will be full, the overfill will be discarded and an error message will be displayed", () => {
+    const expected = [
+      {
+        id: 1,
+        type: 'salmon and avocado',
+        price: 3.99,
+      },
+      {
+        id: 2,
+        type: 'chicken mayo',
+        price: 2.99,
+      },
+      {
+        id: 3,
+        type: 'nutella and sesame seeds',
+        price: 3.99,
+      },
+      {
+        id: 4,
+        type: 'chorizo and soft cheese',
+        price: 3.99,
+      },
+      {
+        id: 5,
+        type: 'halloumi, hummous and lettuce',
+        price: 4.99,
+      }
+    ]
+    basket.addItemToBasket('salmon and avocado', 3.99)
+    basket.addItemToBasket('chicken mayo', 2.99)
+    basket.addItemToBasket('nutella and sesame seeds', 3.99)
+    basket.addItemToBasket('chorizo and soft cheese', 3.99)
+    basket.addItemToBasket('halloumi, hummous and lettuce', 4.99)
+    basket.addItemToBasket('ham and cheese', 2.99)
+    const result = basket.showBasket()
+    expect(result).toEqual(expected);
+  });
+
+  it("a user cannot remove an item that does not exist from the basket", () => {
+    const expected = 'The item does not exist in your basket!'
+    basket.addItemToBasket('salmon and avocado', 3.99)
+    basket.addItemToBasket('chicken mayo', 2.99)
+    basket.addItemToBasket('chorizo and soft cheese', 3.99)
+    const result = basket.removeItemFromBasket(4)
+    expect(result).toEqual(expected);
+  });
+
+  it("Bob's bagel manager can create baskets with larger capacity", () => {
+    const expected = [
+      {
+        id: 1,
+        type: 'salmon and avocado',
+        price: 3.99,
+      },
+      {
+        id: 2,
+        type: 'chicken mayo',
+        price: 2.99,
+      },
+      {
+        id: 3,
+        type: 'nutella and sesame seeds',
+        price: 3.99,
+      },
+      {
+        id: 4,
+        type: 'chorizo and soft cheese',
+        price: 3.99,
+      },
+      {
+        id: 5,
+        type: 'halloumi, hummous and lettuce',
+        price: 4.99,
+      },
+      {
+        id: 6,
+        type: 'ham and cheese',
+        price: 2.99,
+      },
+      {
+        id: 7,
+        type: 'plain',
+        price: 1.99,
+      },
+      {
+        id: 8,
+        type: 'onion',
+        price: 1.99,
+      }
+    ]
+    basket.basketSize = 10
+    basket.addItemToBasket('salmon and avocado', 3.99)
+    basket.addItemToBasket('chicken mayo', 2.99)
+    basket.addItemToBasket('nutella and sesame seeds', 3.99)
+    basket.addItemToBasket('chorizo and soft cheese', 3.99)
+    basket.addItemToBasket('halloumi, hummous and lettuce', 4.99)
+    basket.addItemToBasket('ham and cheese', 2.99)
+    basket.addItemToBasket('plain', 1.99)
+    basket.addItemToBasket('onion', 1.99)
+    const result = basket.showBasket()
+    expect(result).toEqual(expected);
+  });
+
+  it("a user can check item price before adding it to the basket", () => {
+    const expected = 'The price of the item is £3.99'
+    const result = basket.getItemPrice('salmon and avocado')
+    expect(result).toEqual(expected);
+  });
+
+  it("a user knows the total price of the items in their basket", () => {
+    const expected = 'The total price of the items in your basket is £10.97'
+    basket.addItemToBasket('salmon and avocado', 3.99)
+    basket.addItemToBasket('chicken mayo', 2.99)
+    basket.addItemToBasket('nutella and sesame seeds', 3.99)
+    const result = basket.getBasketTotal()
+    expect(result).toEqual(expected);
+  });
 });
-
-/*
-Methods:
-Part II
-As a member of the public,
-So that I can not overfill my small bagel basket
-I'd like to know when my basket is full when I try adding an item beyond my basket capacity.
-
-As a Bob's Bagels manager,
-So that I can record more sales
-I’d like to create baskets with larger capacity when I need to.
-
-As a member of the public
-So that I can maintain my sanity
-I'd like to know if I try to remove an item that doesn't exist in my basket. In the same way, I want to know if I try to add an item with the same ID already in my basket.
-
-Methods:
-isBasketFull()
-
-
-Part III
-As a member of the public,
-So that I can know how much my bagels are,
-I’d like to see the price of each item before I add it to my basket.
-
-As a member of the public,
-So that I can prepare to pay
-When I go to checkout I'd like to know the total sum of the bagels in my basket.
-*/
