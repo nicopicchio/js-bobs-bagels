@@ -1,58 +1,23 @@
+const inventory = require("./inventory.js");
 class Basket {
     constructor() {
         this.basket = [];
         this.basketSize = 5;
-        this.menu = [
-            {
-                type: 'salmon and avocado',
-                price: 3.99
-            },
-            {
-                type: 'chicken mayo',
-                price: 2.99
-            },
-            {
-                type: 'nutella and sesame seeds',
-                price: 3.99
-            },
-            {
-                type: 'chorizo and soft cheese',
-                price: 3.99
-            },
-            {
-                type: 'halloumi, hummous and lettuce',
-                price: 4.99
-            },
-            {
-                type: 'ham and cheese',
-                price: 2.99
-            },
-            {
-                type: 'plain',
-                price: 1.99
-            },
-            {
-                type: 'onion',
-                price: 1.99
-            }
-        ];
+        this.offersArray = [];
     };
     
-    addItemToBasket(type, price) {
-        if (this.basket.length < this.basketSize) {
-            const item = {
-                id: this.basket.length + 1,
-                type: type,
-                price: price
+    addItemToBasket(sku) {
+        for (let i = 0; i < inventory.length; i++) {
+            if (inventory[i].sku === sku && this.basket.length < this.basketSize) {
+                this.basket.push(inventory[i]);
             }
-            this.basket.push(item);
         }
         return 'You cannot add more than 5 items to your basket!'
     };
 
-    removeItemFromBasket(id) {
+    removeItemFromBasket(sku) {
         for (let i = 0; i < this.basket.length; i++) {
-            if (this.basket[i].id === id) {
+            if (this.basket[i].sku === sku) {
                 this.basket.splice(i, 1)
             }
         }
@@ -60,9 +25,9 @@ class Basket {
     }
 
     getItemPrice(product) {
-        for (let i = 0; i < this.menu.length; i++) {
-            if (this.menu[i].type === product) {
-                return `The price of the item is £${this.menu[i].price}`
+        for (let i = 0; i < inventory.length; i++) {
+            if (inventory[i].sku === product) {
+                return `The price of the item is £${inventory[i].price}`
             }
         }
         return 'The product is not available'
@@ -74,10 +39,39 @@ class Basket {
 
     getBasketTotal() {
         let totalPrice = 0;
+        let onionBagels = this.basket.filter(bagel => bagel.sku === 'BGLO')
+        let everythingBagels = this.basket.filter(bagel => bagel.sku === 'BGLE')
+        let plainBagels = this.basket.filter(bagel => bagel.sku === 'BGLP')
         for (let i = 0; i < this.basket.length; i++) {
             totalPrice += this.basket[i].price
         }
-        return `The total price of the items in your basket is £${totalPrice}`
+        return `The total price of the items in your basket is £${Number(totalPrice.toFixed(2))}`
+    }
+
+    sixPackDiscount(bagelTypeArray) {
+        let discount = 0
+        let bagelCounter = 0
+        for (let i = 0; i < bagelTypeArray.length; i++) {
+            if (bagelCounter === 6) {
+                discount += 0.45
+                bagelCounter = 0
+            }
+            bagelCounter++
+        }
+        return discount
+    }
+
+    twelvePackDiscount(bagelTypeArray) {
+        let discount = 0
+        let bagelCounter = 0
+        for (let i = 0; i < bagelTypeArray.length; i++) {
+            if (bagelCounter === 12) {
+                discount += 0.69
+                bagelCounter = 0
+            }
+            bagelCounter++
+        }
+        return discount
     }
 };
 
