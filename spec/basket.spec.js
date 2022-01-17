@@ -215,17 +215,4 @@ describe("Basket", () => {
     const result = basket.getBasketTotal()
     expect(result).toEqual(expected);
   });
-
-  it ("if a user buys 6 onion bagels they get a discount and pay", () => {
-    basket.basketSize = 10
-    basket.addItemToBasket('BGLO')
-    basket.addItemToBasket('BGLO')
-    basket.addItemToBasket('BGLO')
-    basket.addItemToBasket('BGLO')
-    basket.addItemToBasket('BGLO')
-    basket.addItemToBasket('BGLO')
-    const expected = 'The total price of the items in your basket is £2.49'
-    const result = basket.getBasketTotal()
-    expect(result).toEqual(expected);
-  })
 });
